@@ -1,3 +1,4 @@
+
 import "dotenv/config";
 import "express-async-errors";
 import express from "express";
@@ -10,17 +11,28 @@ import leaveRoutes from "./routes/leaveRoutes.js";
 import leavePolicyRoutes from "./routes/leavePolicyRoutes.js";
 
 const app = express();
-app.use(cors({ origin: process.env.CLIENT_URL }));
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://office-attendance-system-six.vercel.app"
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.get("/api/health", (_, res) => res.json({ ok: true }));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/leave-policy", leavePolicyRoutes);
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Office Attendance System API is running 🚀");
 });
 
@@ -30,5 +42,12 @@ app.use((err, req, res, next) => {
 });
 
 connectDB()
-  .then(() => app.listen(process.env.PORT || 5000, () => console.log("Server running")))
-  .catch((e) => { console.error("DB connection failed:", e.message); process.exit(1); });
+  .then(() =>
+    app.listen(process.env.PORT || 5000, () =>
+      console.log("Server running")
+    )
+  )
+  .catch((e) => {
+    console.error("DB connection failed:", e.message);
+    process.exit(1);
+  });
