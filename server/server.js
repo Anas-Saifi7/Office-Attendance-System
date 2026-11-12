@@ -20,6 +20,10 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/leave-policy", leavePolicyRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Office Attendance System API is running 🚀");
+});
+
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ message: "Server error" });
