@@ -5,8 +5,6 @@ import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
-
-
 import Profile from "./pages/employee/Profile";
 import ChangePassword from "./pages/employee/ChangePassword";
 import AttendanceHistory from "./pages/employee/AttendanceHistory";
