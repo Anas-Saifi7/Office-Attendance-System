@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api, { errMsg } from "../../api";
+import { socket } from "../../socket";
 import { fmtTime, fmtHours, mapLink } from "../../utils";
 
 export default function Records() {
@@ -16,16 +17,34 @@ export default function Records() {
   const params = () =>
     Object.fromEntries(Object.entries(f).filter(([, v]) => v));
 
-  const load = () =>
-    api
-      .get("/admin/attendance", { params: params() })
-      .then((r) => setRecords(r.data))
-      .catch((e) => setError(errMsg(e)));
+  const load = useCallback(() => {
+  api
+    .get("/admin/attendance", {
+      params: Object.fromEntries(
+        Object.entries(f).filter(([, v]) => v)
+      ),
+    })
+    .then((r) => {
+      setRecords(r.data);
+      setError("");
+    })
+    .catch((e) => setError(errMsg(e)));
+}, [f]);
 
   useEffect(() => {
-    api.get("/admin/employees").then((r) => setEmployees(r.data));
-    load();
-  }, []);
+  api
+    .get("/admin/employees")
+    .then((r) => setEmployees(r.data))
+    .catch((e) => setError(errMsg(e)));
+
+  load();
+
+  socket.on("attendance:updated", load);
+
+  return () => {
+    socket.off("attendance:updated", load);
+  };
+}, [load]);
 
   const exportCsv = async () => {
     try {

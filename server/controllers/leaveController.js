@@ -8,7 +8,6 @@ const startOfDay = (date) => {
   return d;
 };
 
-// Employee: Apply leave
 export const applyLeave = async (req, res) => {
   try {
     const { leaveType, startDate, endDate, reason } = req.body;
@@ -78,7 +77,6 @@ export const applyLeave = async (req, res) => {
   }
 };
 
-// Employee: My leave requests
 export const myLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find({
@@ -91,7 +89,6 @@ export const myLeaves = async (req, res) => {
   }
 };
 
-// Employee: Leave details
 export const leaveDetails = async (req, res) => {
   try {
     const leave = await Leave.findOne({
@@ -109,7 +106,6 @@ export const leaveDetails = async (req, res) => {
   }
 };
 
-// Employee: Cancel pending leave
 export const cancelLeave = async (req, res) => {
   try {
     const leave = await Leave.findOne({
@@ -133,7 +129,6 @@ export const cancelLeave = async (req, res) => {
   }
 };
 
-// Admin: All leaves
 export const allLeaves = async (req, res) => {
   try {
     const leaves = await Leave.find()
@@ -147,7 +142,6 @@ export const allLeaves = async (req, res) => {
   }
 };
 
-// Admin: Approve or reject leave
 export const updateLeaveStatus = async (req, res) => {
   try {
     const { status, adminRemark } = req.body;

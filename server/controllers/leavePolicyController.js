@@ -1,7 +1,6 @@
-
 import LeavePolicy from "../models/LeavePolicy.js";
 
-// Default policy
+
 const defaultLeaveTypes = [
   { name: "Casual Leave", code: "Casual", yearlyLimit: 12, isPaid: true },
   { name: "Sick Leave", code: "Sick", yearlyLimit: 12, isPaid: true },
@@ -16,7 +15,6 @@ const defaultLeaveTypes = [
   { name: "Half Day Leave", code: "HalfDay", yearlyLimit: 0, isPaid: true },
 ];
 
-// GET policy
 export async function getLeavePolicy(req, res) {
   try {
     const year = Number(req.query.year) || new Date().getFullYear();
@@ -36,7 +34,6 @@ export async function getLeavePolicy(req, res) {
   }
 }
 
-// UPDATE policy (admin)
 export async function updateLeavePolicy(req, res) {
   try {
     const { year, leaveTypes } = req.body;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api";
+import { socket } from "../../socket";
 import { fmtTime, mapLink } from "../../utils";
 
 export default function Overview() {
@@ -15,28 +16,43 @@ export default function Overview() {
   }).format(new Date());
 
   useEffect(() => {
-    Promise.all([
-      api.get("/admin/dashboard"),
-      api.get("/admin/attendance", {
-        params: { from: today, to: today },
-      }),
-    ])
-      .then(([dashboard, attendance]) => {
-        setD(dashboard.data);
+  const loadDashboard = async () => {
+    try {
+      const [dashboard, attendance] = await Promise.all([
+        api.get("/admin/dashboard"),
+        api.get("/admin/attendance", {
+          params: { from: today, to: today },
+        }),
+      ]);
 
-        const records = attendance.data;
-        setTodayRecords(
-          Array.isArray(records)
-            ? records
-            : Array.isArray(records.records)
-              ? records.records
-              : [],
-        );
-      })
-      .catch((err) =>
-        setError(err.response?.data?.message || "Failed to load dashboard"),
+      setD(dashboard.data);
+
+      const records = attendance.data;
+
+      setTodayRecords(
+        Array.isArray(records)
+          ? records
+          : Array.isArray(records.records)
+            ? records.records
+            : []
       );
-  }, []);
+
+      setError("");
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Failed to load dashboard"
+      );
+    }
+  };
+
+  loadDashboard();
+
+  socket.on("attendance:updated", loadDashboard);
+
+  return () => {
+    socket.off("attendance:updated", loadDashboard);
+  };
+}, []);
 
   if (error) {
     return (
