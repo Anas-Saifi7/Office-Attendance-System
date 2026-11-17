@@ -2,10 +2,12 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+if (import.meta.env.PROD && !API_URL) {
+  throw new Error("VITE_API_URL is missing!");
+}
+
 const api = axios.create({
-  baseURL: API_URL
-    ? `${API_URL.replace(/\/$/, "")}/api`
-    : "/api",
+  baseURL: `${API_URL.replace(/\/+$/, "")}/api`,
 });
 
 api.interceptors.request.use((config) => {
@@ -30,7 +32,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(err);
-  },
+  }
 );
 
 export const errMsg = (e) =>
