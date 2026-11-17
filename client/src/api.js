@@ -3,11 +3,11 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 if (import.meta.env.PROD && !API_URL) {
-  throw new Error("VITE_API_URL is missing!");
+  throw new Error("VITE_API_URL is missing in Vercel!");
 }
 
 const api = axios.create({
-  baseURL: `${API_URL.replace(/\/+$/, "")}/api`,
+  baseURL: `${(API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api`,
 });
 
 api.interceptors.request.use((config) => {
