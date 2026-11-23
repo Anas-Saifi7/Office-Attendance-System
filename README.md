@@ -44,7 +44,6 @@ Real-time updates
 Technology Stack
 Frontend: React, Vite, JavaScript, Tailwind CSS, Axios, Socket.IO
 Client.
-
 Backend: Node.js, Express, MongoDB, Mongoose, JSON Web Token (JWT),
 Socket.IO, CORS.
 Project Structure
