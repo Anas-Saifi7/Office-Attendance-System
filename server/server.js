@@ -57,7 +57,6 @@ io.use(async (socket, next) => {
 
 app.set("io", io);
 
-// Express middleware
 app.use(cors({
   origin: allowedOrigins,
   credentials: true
@@ -65,7 +64,6 @@ app.use(cors({
 
 app.use(express.json());
 
-// Health check
 app.get("/api/health", (_, res) => {
   res.json({ ok: true });
 });
@@ -77,12 +75,10 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/leave-policy", leavePolicyRoutes);
 
-// Root route
 app.get("/", (_, res) => {
   res.send("Office Attendance System API is running 🚀");
 });
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ message: "Server error" });

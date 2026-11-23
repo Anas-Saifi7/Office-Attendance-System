@@ -14,8 +14,8 @@ const TABS = [
   ["records", "Records", Records],
   ["office", "Office settings", OfficeSettings],
 
-["leaves", "Leave Management", LeaveManagement],
-["leave-policy", "Leave Policy", AdminLeavePolicy]
+  ["leaves", "Leave Management", LeaveManagement],
+  ["leave-policy", "Leave Policy", AdminLeavePolicy]
 
 ];
 
@@ -34,11 +34,10 @@ export default function AdminDashboard() {
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`whitespace-nowrap border-b-2 px-4 py-4 text-sm font-medium transition ${
-                tab === key
+              className={`whitespace-nowrap border-b-2 px-4 py-4 text-sm font-medium transition ${tab === key
                   ? "border-blue-600 text-blue-600"
                   : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-800"
-              }`}
+                }`}
             >
               {label}
             </button>

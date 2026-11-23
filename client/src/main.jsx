@@ -6,7 +6,11 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
+  <BrowserRouter 
+   future={{
+     v7_startTransition: true,
+   }}
+  >
     <AuthProvider>
       <App />
     </AuthProvider>

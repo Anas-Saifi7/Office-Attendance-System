@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-
-const API = import.meta.env.VITE_API_URL;
+import api from "../../api";
 
 const initialTypes = [
   { name: "Casual Leave", code: "Casual", yearlyLimit: 12, isPaid: true },
@@ -24,27 +23,24 @@ export default function AdminLeavePolicy() {
 
   const token = localStorage.getItem("token");
 
-  const loadPolicy = async () => {
-    try {
-      setLoading(true);
+const loadPolicy = async () => {
+  try {
+    setLoading(true);
+    setMessage("");
 
-      const res = await fetch(`${API}/leave-policy?year=${year}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const res = await api.get("/leave-policy", {
+      params: { year },
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message);
-
-      setTypes(data.leaveTypes || initialTypes);
-    } catch (error) {
-      setMessage(error.message || "Failed to load policy");
-    } finally {
-      setLoading(false);
-    }
-  };
+    setTypes(res.data.leaveTypes || initialTypes);
+  } catch (error) {
+    setMessage(
+      error.response?.data?.message || "Failed to load policy"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     loadPolicy();
@@ -75,33 +71,24 @@ export default function AdminLeavePolicy() {
   };
 
   const savePolicy = async () => {
-    try {
-      setLoading(true);
-      setMessage("");
+  try {
+    setLoading(true);
+    setMessage("");
 
-      const res = await fetch(`${API}/leave-policy`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          year,
-          leaveTypes: types,
-        }),
-      });
+    await api.put("/leave-policy", {
+      year,
+      leaveTypes: types,
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message);
-
-      setMessage("Leave policy saved successfully!");
-    } catch (error) {
-      setMessage(error.message || "Failed to save policy");
-    } finally {
-      setLoading(false);
-    }
-  };
+    setMessage("Leave policy saved successfully!");
+  } catch (error) {
+    setMessage(
+      error.response?.data?.message || "Failed to save policy"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
@@ -122,7 +109,7 @@ export default function AdminLeavePolicy() {
             onChange={(e) => setYear(Number(e.target.value))}
             className="rounded-xl border border-slate-300 bg-white px-4 py-3"
           >
-            {[2025, 2026, 2027, 2028, 2029, 2030].map((y) => (
+            {[2024,2025, 2026, 2027, 2028, 2029, 2030].map((y) => (
               <option key={y} value={y}>{y}</option>
             ))}
           </select>
@@ -172,7 +159,7 @@ export default function AdminLeavePolicy() {
                       <input
                         type="number"
                         min="0"
-                        step="0.5"
+                        step="1"
                         value={type.yearlyLimit}
                         onChange={(e) =>
                           updateType(
